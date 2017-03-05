@@ -1,1 +1,1 @@
-#[ModKit Wiki](../../wiki)
+Color Math: Module for KTaNE
