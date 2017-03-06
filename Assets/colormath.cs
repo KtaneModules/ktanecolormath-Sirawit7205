@@ -200,6 +200,7 @@ public class colormath : MonoBehaviour {
     void ansChk()
     {
         int mult = 1000;
+		_ans = 0;
         for (int i = 0; i < 4; i++)
         {
             _ans += _anscolor[i, _rightPos[i]] * mult;
