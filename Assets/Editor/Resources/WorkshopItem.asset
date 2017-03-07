@@ -20,7 +20,10 @@ MonoBehaviour:
     pointing this out for me!)
 
 
-    Module ID: colormath'
+    Module ID: colormath
+
+
+    Manual: https://ktane.timwi.de/HTML/Color%20Math.html'
   PreviewImage: {fileID: 2800000, guid: 9c3c87b138425e64cba2b11b9d05dc3f, type: 3}
   Tags:
   - Regular Module
