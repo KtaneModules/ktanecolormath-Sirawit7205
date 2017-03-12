@@ -191,6 +191,8 @@ public class colormath : MonoBehaviour {
         }
         else
         {
+            Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, btn[m].transform);
+            btn[m].AddInteractionPunch();
             _rightPos[m]++;
             if (_rightPos[m] > 9) _rightPos[m] = 0;
             ledRight[m].material.color = colors[_rightPos[m]];
@@ -200,7 +202,11 @@ public class colormath : MonoBehaviour {
     void ansChk()
     {
         int mult = 1000;
-		_ans = 0;
+        _ans = 0;
+
+        Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, btn[4].transform);
+        btn[4].AddInteractionPunch();
+
         for (int i = 0; i < 4; i++)
         {
             _ans += _anscolor[i, _rightPos[i]] * mult;
