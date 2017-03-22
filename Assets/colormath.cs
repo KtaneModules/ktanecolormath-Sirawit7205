@@ -44,7 +44,7 @@ public class colormath : MonoBehaviour {
 
     private bool _click = false;
     private int _mode, _act, _left, _right, _red = 0, _ans = 0, _sol = 0;
-    private int[] _rightPos = { 0, 0, 0, 0 };
+    private int[] _rightPos = { 0, 0, 0, 0 }, _solColor = { 0, 0, 0, 0 };
     private string[] _colorText = { "Blue", "Green", "Purple", "Yellow", "White", "Magenta", "Red", "Orange", "Gray", "Black" };
 
     void Start()
@@ -84,6 +84,7 @@ public class colormath : MonoBehaviour {
 
     void Init()
     {
+        int temp, mult = 1000;
         _mode = Random.Range(0, 2); _act = Random.Range(0, 4);
         _left = Random.Range(0, 10000); _right = Random.Range(0, 10000);
 
@@ -152,6 +153,16 @@ public class colormath : MonoBehaviour {
         {
             Debug.LogFormat("[Color Math #{0}] Result capped from {1} to {2}", _moduleId, _sol, _sol %= 10000);
         }
+
+        temp = _sol;
+        for (int i = 0; i < 4; i++)
+        {
+            _solColor[i] = temp / mult;
+            temp %= mult;
+            mult /= 10;
+        }
+        Debug.LogFormat("[Color Math #{0}] End solution = {1} (Sequence {2} {3} {4} {5})", _moduleId,
+            _sol, _colorText[_anscolordbg[0, _solColor[0]]], _colorText[_anscolordbg[1, _solColor[1]]], _colorText[_anscolordbg[2, _solColor[2]]], _colorText[_anscolordbg[3, _solColor[3]]]);
     }
 
     void generateRed()
@@ -220,7 +231,6 @@ public class colormath : MonoBehaviour {
     void ansChk()
     {
         int mult = 1000, temp = _sol;
-        int[] tempSol = { 0, 0, 0, 0 };
         _ans = 0;
 
         Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, btn[4].transform);
@@ -229,12 +239,11 @@ public class colormath : MonoBehaviour {
         for (int i = 0; i < 4; i++)
         {
             _ans += _anscolor[i, _rightPos[i]] * mult;
-            tempSol[i] = temp / mult;
             temp %= mult;
             mult /= 10;
         }
         Debug.LogFormat("[Color Math #{0}] Solution = {1} (Sequence {2} {3} {4} {5}) Answered = {6} (Sequence {7} {8} {9} {10})",_moduleId,
-            _sol, _colorText[_anscolordbg[0, tempSol[0]]], _colorText[_anscolordbg[1, tempSol[1]]], _colorText[_anscolordbg[2, tempSol[2]]], _colorText[_anscolordbg[3, tempSol[3]]],
+            _sol, _colorText[_anscolordbg[0, _solColor[0]]], _colorText[_anscolordbg[1, _solColor[1]]], _colorText[_anscolordbg[2, _solColor[2]]], _colorText[_anscolordbg[3, _solColor[3]]],
             _ans, _colorText[_rightPos[0]], _colorText[_rightPos[1]], _colorText[_rightPos[2]], _colorText[_rightPos[3]]);
 
         if (_sol == _ans)
