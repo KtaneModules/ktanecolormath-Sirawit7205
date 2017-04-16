@@ -43,7 +43,7 @@ public class colormath : MonoBehaviour {
     {8,0,2,6,3,5,9,7,1,4}
     };
 
-    private bool _click = false;
+    private bool _click = false, _isSolved = false, _lightsOn = false;
     private int _mode, _act, _left, _right, _red = 0, _ans = 0, _sol = 0;
     private int[] _rightPos = { 0, 0, 0, 0 }, _solColor = { 0, 0, 0, 0 };
     private string[] _colorText = { "Blue", "Green", "Purple", "Yellow", "White", "Magenta", "Red", "Orange", "Gray", "Black" };
@@ -164,6 +164,8 @@ public class colormath : MonoBehaviour {
         }
         Debug.LogFormat("[Color Math #{0}] End solution = {1} (Sequence {2} {3} {4} {5})", _moduleId,
             _sol, _colorText[_anscolordbg[0, _solColor[0]]], _colorText[_anscolordbg[1, _solColor[1]]], _colorText[_anscolordbg[2, _solColor[2]]], _colorText[_anscolordbg[3, _solColor[3]]]);
+
+        _lightsOn = true;
     }
 
     void generateRed()
@@ -210,22 +212,26 @@ public class colormath : MonoBehaviour {
 
     void handlePress(int m)
     {
-        if (_click == false)
+        Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, btn[m].transform);
+        btn[m].AddInteractionPunch();
+
+        if(!_isSolved && _lightsOn)
         {
-            for (int i = 0; i < 4; i++)
+            if (_click == false)
             {
-                ledRight[i].material.color = Color.blue;
-                _rightPos[i] = 0;
+                for (int i = 0; i < 4; i++)
+                {
+                    ledRight[i].material.color = Color.blue;
+                    _rightPos[i] = 0;
+                }
+                _click = true;
             }
-            _click = true;
-        }
-        else
-        {
-            Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, btn[m].transform);
-            btn[m].AddInteractionPunch();
-            _rightPos[m]++;
-            if (_rightPos[m] > 9) _rightPos[m] = 0;
-            ledRight[m].material.color = colors[_rightPos[m]];
+            else
+            {
+                _rightPos[m]++;
+                if (_rightPos[m] > 9) _rightPos[m] = 0;
+                ledRight[m].material.color = colors[_rightPos[m]];
+            }
         }
     }
 
@@ -237,27 +243,31 @@ public class colormath : MonoBehaviour {
         Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, btn[4].transform);
         btn[4].AddInteractionPunch();
 
-        for (int i = 0; i < 4; i++)
+        if(!_isSolved && _lightsOn)
         {
-            _ans += _anscolor[i, _rightPos[i]] * mult;
-            temp %= mult;
-            mult /= 10;
-        }
-        Debug.LogFormat("[Color Math #{0}] Solution = {1} (Sequence {2} {3} {4} {5}) Answered = {6} (Sequence {7} {8} {9} {10})",_moduleId,
-            _sol, _colorText[_anscolordbg[0, _solColor[0]]], _colorText[_anscolordbg[1, _solColor[1]]], _colorText[_anscolordbg[2, _solColor[2]]], _colorText[_anscolordbg[3, _solColor[3]]],
-            _ans, _colorText[_rightPos[0]], _colorText[_rightPos[1]], _colorText[_rightPos[2]], _colorText[_rightPos[3]]);
+            for (int i = 0; i < 4; i++)
+            {
+                _ans += _anscolor[i, _rightPos[i]] * mult;
+                temp %= mult;
+                mult /= 10;
+            }
+            Debug.LogFormat("[Color Math #{0}] Solution = {1} (Sequence {2} {3} {4} {5}) Answered = {6} (Sequence {7} {8} {9} {10})", _moduleId,
+                _sol, _colorText[_anscolordbg[0, _solColor[0]]], _colorText[_anscolordbg[1, _solColor[1]]], _colorText[_anscolordbg[2, _solColor[2]]], _colorText[_anscolordbg[3, _solColor[3]]],
+                _ans, _colorText[_rightPos[0]], _colorText[_rightPos[1]], _colorText[_rightPos[2]], _colorText[_rightPos[3]]);
 
-        if (_sol == _ans)
-        {
-            GetComponent<KMBombModule>().HandlePass();
-            Debug.LogFormat("[Color Math #{0}] Answer correct! Module passed!", _moduleId);
-        }
-        else
-        {
-            GetComponent<KMBombModule>().HandleStrike();
-            drawInitColor(1);
-            _click = false;
-            Debug.LogFormat("[Color Math #{0}] Answer incorrect! Strike!", _moduleId);
+            if (_sol == _ans)
+            {
+                GetComponent<KMBombModule>().HandlePass();
+                Debug.LogFormat("[Color Math #{0}] Answer correct! Module passed!", _moduleId);
+                _isSolved = true;
+            }
+            else
+            {
+                GetComponent<KMBombModule>().HandleStrike();
+                drawInitColor(1);
+                _click = false;
+                Debug.LogFormat("[Color Math #{0}] Answer incorrect! Strike!", _moduleId);
+            }
         }
     }
 	
