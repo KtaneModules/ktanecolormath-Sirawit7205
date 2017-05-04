@@ -217,7 +217,7 @@ public class colormath : MonoBehaviour {
 
         if(!_isSolved && _lightsOn)
         {
-            if (_click == false)
+            if (!_click)
             {
                 for (int i = 0; i < 4; i++)
                 {
@@ -273,7 +273,8 @@ public class colormath : MonoBehaviour {
 	
 	KMSelectable[] ProcessTwitchCommand(string command)
     {
-        KMSelectable[] cmdA, cmdB, cmdC, cmdD, first = { btn[1] };
+        int repA, repB, repC, repD;
+        KMSelectable[] cmdA, cmdB, cmdC, cmdD, first = {};
         string colIndex = "bgpywmroak";
 
         command = command.ToLowerInvariant().Trim();
@@ -282,11 +283,30 @@ public class colormath : MonoBehaviour {
 
         if (Regex.IsMatch(command, @"^set [bgpywmroak],[bgpywmroak],[bgpywmroak],[bgpywmroak]$"))
         {
+            if (!_click)
+            {
+                first = new[] { btn[0] };
+                for (int i = 0; i < 4; i++)
+                {
+                    _rightPos[i] = 0;
+                }
+            }
+
             command = command.Substring(4);
-            cmdA = Enumerable.Repeat(btn[0], colIndex.IndexOf(command[0])).ToArray();
-            cmdB = Enumerable.Repeat(btn[1], colIndex.IndexOf(command[2])).ToArray();
-            cmdC = Enumerable.Repeat(btn[2], colIndex.IndexOf(command[4])).ToArray();
-            cmdD = Enumerable.Repeat(btn[3], colIndex.IndexOf(command[6])).ToArray();
+
+            repA = colIndex.IndexOf(command[0]) - _rightPos[0];
+            repB = colIndex.IndexOf(command[2]) - _rightPos[1];
+            repC = colIndex.IndexOf(command[4]) - _rightPos[2];
+            repD = colIndex.IndexOf(command[6]) - _rightPos[3];
+            if (repA < 0) repA += 10;
+            if (repB < 0) repB += 10;
+            if (repC < 0) repC += 10;
+            if (repD < 0) repD += 10;
+
+            cmdA = Enumerable.Repeat(btn[0], repA).ToArray();
+            cmdB = Enumerable.Repeat(btn[1], repB).ToArray();
+            cmdC = Enumerable.Repeat(btn[2], repC).ToArray();
+            cmdD = Enumerable.Repeat(btn[3], repD).ToArray();
             return first.Concat(cmdA.Concat(cmdB.Concat(cmdC.Concat(cmdD)))).ToArray();
         }
 
