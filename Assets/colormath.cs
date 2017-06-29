@@ -87,7 +87,7 @@ public class colormath : MonoBehaviour {
     {
         int temp, mult = 1000;
         _mode = Random.Range(0, 2); _act = Random.Range(0, 4);
-        _left = Random.Range(0, 10000); _right = Random.Range(0, 10000);
+        _left = Random.Range(0, 10000); _right = Random.Range(1, 10000);
 
         drawInitColor(0);
 
