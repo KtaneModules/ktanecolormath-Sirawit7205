@@ -13,5 +13,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: colormath
   title: Color Math
-  version: 1.3
+  description: "So many colors!\r\n\r\nMy very first attempt at using KMBombInfoExtension.
+    (Thanks Timwi for pointing this out for me!)\r\n\r\nModule ID: colormath\r\n\r\nManual
+    HTML: https://ktane.timwi.de/HTML/Color%20Math.html\r\nManual PDF: https://ktane.timwi.de/PDF/Color%20Math.pdf"
+  version: 2.0
   outputFolder: build
+  previewImage: {fileID: 2800000, guid: 9c3c87b138425e64cba2b11b9d05dc3f, type: 3}

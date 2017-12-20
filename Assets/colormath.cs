@@ -213,7 +213,6 @@ public class colormath : MonoBehaviour {
     void handlePress(int m)
     {
         Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, btn[m].transform);
-        btn[m].AddInteractionPunch();
 
         if(!_isSolved && _lightsOn)
         {
