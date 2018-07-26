@@ -1,16 +1,25 @@
 ﻿using UnityEngine;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 using KMHelper;
 
 public class colormath : MonoBehaviour {
+
+    public class ModSettingsJSON
+    {
+        public bool enableColorblindMode;
+        public string note;
+    }
 
     public KMAudio Audio;
     public KMSelectable[] btn;
     public MeshRenderer[] ledLeft, ledRight;
     public KMBombInfo Info;
+    public KMModSettings modSettings;
     public TextMesh Text;
     public Color[] colors;
+    public GameObject[] colorblindTextLeft, colorblindTextRight;
 
     private static int _moduleIdCounter = 1;
     private int _moduleId;
@@ -43,10 +52,11 @@ public class colormath : MonoBehaviour {
     {8,0,2,6,3,5,9,7,1,4}
     };
 
-    private bool _click = false, _isSolved = false, _lightsOn = false;
+    private bool _click = false, _isSolved = false, _lightsOn = false, isColorBlind = false;
     private int _mode, _act, _left, _right, _red = 0, _ans = 0, _sol = 0;
     private int[] _rightPos = { 0, 0, 0, 0 }, _solColor = { 0, 0, 0, 0 };
     private string[] _colorText = { "Blue", "Green", "Purple", "Yellow", "White", "Magenta", "Red", "Orange", "Gray", "Black" };
+    private string[] _colorblindText = { "B", "G", "P", "Y", "W", "M", "R", "O", "A", "K" };
 
     void Start()
     {
@@ -86,8 +96,25 @@ public class colormath : MonoBehaviour {
     void Init()
     {
         int temp, mult = 1000;
-        _mode = Random.Range(0, 2); _act = Random.Range(0, 4);
-        _left = Random.Range(0, 10000); _right = Random.Range(1, 10000);
+        _mode = Random.Range(0, 2);
+        _act = Random.Range(0, 4);
+        _left = Random.Range(0, 10000);
+        _right = Random.Range(1, 10000);
+
+        //check for color blind mode first!
+        isColorBlind = colorBlindCheck();
+        
+        //enable helper texts
+        if (isColorBlind)
+        {
+            Debug.LogFormat("[Color Math #{0}] Colorblind mode enabled, showing colors of LEDs in text.", _moduleId);
+
+            for (int i = 0; i < 4; i++)
+            {
+                colorblindTextLeft[i].SetActive(true);
+                colorblindTextRight[i].SetActive(true);
+            }
+        }
 
         drawInitColor(0);
 
@@ -197,16 +224,42 @@ public class colormath : MonoBehaviour {
         {
             tl = l / mult; tr = r / mult;
             l %= mult; r %= mult;
+
             _tempPosLeft[i] = _leftcolor[i, tl];
             _tempPosRight[i] = _rightcolor[i, tr];
+
             ledLeft[i].material.color = colors[_leftcolor[i,tl]];
             ledRight[i].material.color = colors[_rightcolor[i,tr]];
+
+            if (isColorBlind)
+            {
+                colorblindTextLeft[i].GetComponent<TextMesh>().text = _colorblindText[_leftcolor[i, tl]];
+                colorblindTextRight[i].GetComponent<TextMesh>().text = _colorblindText[_rightcolor[i, tr]];
+            }
+
             mult /= 10;
         }
         if(m == 0)
         {
             Debug.LogFormat("[Color Math #{0}] Left LED converts to {1} (sequence {2} {3} {4} {5})", _moduleId, _left, _colorText[_tempPosLeft[0]], _colorText[_tempPosLeft[1]], _colorText[_tempPosLeft[2]], _colorText[_tempPosLeft[3]]);
             Debug.LogFormat("[Color Math #{0}] Right LED converts to {1} (sequence {2} {3} {4} {5})", _moduleId, _right, _colorText[_tempPosRight[0]], _colorText[_tempPosRight[1]], _colorText[_tempPosRight[2]], _colorText[_tempPosRight[3]]);
+        }
+    }
+
+    bool colorBlindCheck()
+    {
+        try
+        {
+            ModSettingsJSON settings = JsonConvert.DeserializeObject<ModSettingsJSON>(modSettings.Settings);
+            if (settings != null)
+                return settings.enableColorblindMode;
+            else
+                return false;
+        }
+        catch (JsonReaderException e)
+        {
+            Debug.LogFormat("[Color Math #{0}] JSON reading failed with error {1}, assuming colorblind mode is disabled.", _moduleId, e.Message);
+            return false;
         }
     }
 
@@ -222,6 +275,8 @@ public class colormath : MonoBehaviour {
                 {
                     ledRight[i].material.color = Color.blue;
                     _rightPos[i] = 0;
+
+                    if (isColorBlind) colorblindTextRight[i].GetComponent<TextMesh>().text = _colorblindText[_rightPos[i]];
                 }
                 _click = true;
             }
@@ -230,6 +285,8 @@ public class colormath : MonoBehaviour {
                 _rightPos[m]++;
                 if (_rightPos[m] > 9) _rightPos[m] = 0;
                 ledRight[m].material.color = colors[_rightPos[m]];
+
+                if (isColorBlind) colorblindTextRight[m].GetComponent<TextMesh>().text = _colorblindText[_rightPos[m]];
             }
         }
     }
