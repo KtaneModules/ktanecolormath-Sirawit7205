@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using KMHelper;
 
-public class colormath : MonoBehaviour {
+public class Colormath : MonoBehaviour {
 
     public class ModSettingsJSON
     {
@@ -24,28 +24,28 @@ public class colormath : MonoBehaviour {
     private static int _moduleIdCounter = 1;
     private int _moduleId;
 
-    private int[,] _leftcolor = new int[4, 10] {
+    private readonly int[,] _leftcolor = new int[4, 10] {
     {5,1,2,8,3,7,0,9,6,4},
     {6,1,9,4,3,7,5,8,0,2},
     {4,1,5,7,0,6,9,3,8,2},
     {8,6,9,7,4,3,0,2,1,5}
     };
 
-    private int[,] _rightcolor = new int[4, 10] {
+    private readonly int[,] _rightcolor = new int[4, 10] {
     {0,8,9,4,3,2,1,5,7,6},
     {3,8,0,5,6,4,9,7,2,1},
     {1,9,4,7,3,0,2,5,8,6},
     {9,7,2,8,1,0,5,6,4,3}
     };
 
-    private int[,] _anscolor = new int[4, 10] {
+    private readonly int[,] _anscolor = new int[4, 10] {
     {5,1,4,8,3,6,9,2,0,7},
     {0,1,3,7,9,4,5,8,6,2},
     {2,6,7,1,9,0,4,8,3,5},
     {1,8,2,4,9,5,3,7,0,6}
     };
 
-    private int[,] _anscolordbg = new int[4, 10] {
+    private readonly int[,] _anscolordbg = new int[4, 10] {
     {8,1,7,4,2,0,5,9,3,6},
     {0,1,9,2,5,6,8,3,7,4},
     {5,3,0,8,6,9,1,2,7,4},
@@ -54,9 +54,9 @@ public class colormath : MonoBehaviour {
 
     private bool _click = false, _isSolved = false, _lightsOn = false, isColorBlind = false;
     private int _mode, _act, _left, _right, _red = 0, _ans = 0, _sol = 0;
-    private int[] _rightPos = { 0, 0, 0, 0 }, _solColor = { 0, 0, 0, 0 };
-    private string[] _colorText = { "Blue", "Green", "Purple", "Yellow", "White", "Magenta", "Red", "Orange", "Gray", "Black" };
-    private string[] _colorblindText = { "B", "G", "P", "Y", "W", "M", "R", "O", "A", "K" };
+    private readonly int[] _rightPos = { 0, 0, 0, 0 }, _solColor = { 0, 0, 0, 0 };
+    private readonly string[] _colorText = { "Blue", "Green", "Purple", "Yellow", "White", "Magenta", "Red", "Orange", "Gray", "Black" };
+    private readonly string[] _colorblindText = { "B", "G", "P", "Y", "W", "M", "R", "O", "A", "K" };
 
     void Start()
     {
@@ -68,27 +68,27 @@ public class colormath : MonoBehaviour {
     {
         btn[0].OnInteract += delegate ()
         {
-            handlePress(0);
+            HandlePress(0);
             return false;
         };
         btn[1].OnInteract += delegate ()
         {
-            handlePress(1);
+            HandlePress(1);
             return false;
         };
         btn[2].OnInteract += delegate ()
         {
-            handlePress(2);
+            HandlePress(2);
             return false;
         };
         btn[3].OnInteract += delegate ()
         {
-            handlePress(3);
+            HandlePress(3);
             return false;
         };
         btn[4].OnInteract += delegate ()
         {
-            ansChk();
+            AnsChk();
             return false;
         };
     }
@@ -102,7 +102,7 @@ public class colormath : MonoBehaviour {
         _right = Random.Range(1, 10000);
 
         //check for color blind mode first!
-        isColorBlind = colorBlindCheck();
+        isColorBlind = ColorBlindCheck();
         
         //enable helper texts
         if (isColorBlind)
@@ -116,7 +116,7 @@ public class colormath : MonoBehaviour {
             }
         }
 
-        drawInitColor(0);
+        DrawInitColor(0);
 
         if (_mode == 0)
         {
@@ -150,7 +150,7 @@ public class colormath : MonoBehaviour {
         else
         {
             Text.color = Color.red;
-            generateRed();
+            GenerateRed();
             if (_act == 0)
             {
                 _sol = _left + _red;
@@ -195,7 +195,7 @@ public class colormath : MonoBehaviour {
         _lightsOn = true;
     }
 
-    void generateRed()
+    void GenerateRed()
     {
         int _batt = Info.GetBatteryCount();
         if(_batt<=1)
@@ -216,7 +216,7 @@ public class colormath : MonoBehaviour {
         }
     }
 
-    void drawInitColor(int m)
+    void DrawInitColor(int m)
     {
         int[] _tempPosLeft = { 0, 0, 0, 0 }, _tempPosRight = { 0, 0, 0, 0 };
         int mult = 1000, l = _left, r = _right, tl, tr;
@@ -246,7 +246,7 @@ public class colormath : MonoBehaviour {
         }
     }
 
-    bool colorBlindCheck()
+    bool ColorBlindCheck()
     {
         try
         {
@@ -263,7 +263,7 @@ public class colormath : MonoBehaviour {
         }
     }
 
-    void handlePress(int m)
+    void HandlePress(int m)
     {
         Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, btn[m].transform);
 
@@ -291,7 +291,7 @@ public class colormath : MonoBehaviour {
         }
     }
 
-    void ansChk()
+    void AnsChk()
     {
         int mult = 1000, temp = _sol;
         _ans = 0;
@@ -320,7 +320,7 @@ public class colormath : MonoBehaviour {
             else
             {
                 GetComponent<KMBombModule>().HandleStrike();
-                drawInitColor(1);
+                DrawInitColor(1);
                 _click = false;
                 Debug.LogFormat("[Color Math #{0}] Answer incorrect! Strike!", _moduleId);
             }

@@ -147,46 +147,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
-    - target: {fileID: 102999837239466848, guid: 266b285465f986b4da8d4e663254c084,
-        type: 2}
-      propertyPath: m_Text
-      value: '-'
-      objectReference: {fileID: 0}
-    - target: {fileID: 102299219017066228, guid: 266b285465f986b4da8d4e663254c084,
-        type: 2}
-      propertyPath: m_Text
-      value: '-'
-      objectReference: {fileID: 0}
-    - target: {fileID: 102000010481119720, guid: 266b285465f986b4da8d4e663254c084,
-        type: 2}
-      propertyPath: m_Text
-      value: '-'
-      objectReference: {fileID: 0}
-    - target: {fileID: 102279317801488238, guid: 266b285465f986b4da8d4e663254c084,
-        type: 2}
-      propertyPath: m_Text
-      value: '-'
-      objectReference: {fileID: 0}
-    - target: {fileID: 102000280167856376, guid: 266b285465f986b4da8d4e663254c084,
-        type: 2}
-      propertyPath: m_Text
-      value: '-'
-      objectReference: {fileID: 0}
-    - target: {fileID: 102062546289604938, guid: 266b285465f986b4da8d4e663254c084,
-        type: 2}
-      propertyPath: m_Text
-      value: '-'
-      objectReference: {fileID: 0}
-    - target: {fileID: 102093658221575580, guid: 266b285465f986b4da8d4e663254c084,
-        type: 2}
-      propertyPath: m_Text
-      value: '-'
-      objectReference: {fileID: 0}
-    - target: {fileID: 102282004081194510, guid: 266b285465f986b4da8d4e663254c084,
-        type: 2}
-      propertyPath: m_Text
-      value: '-'
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 266b285465f986b4da8d4e663254c084, type: 2}
   m_IsPrefabParent: 0
