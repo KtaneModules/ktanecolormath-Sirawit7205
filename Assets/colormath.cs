@@ -326,8 +326,12 @@ public class Colormath : MonoBehaviour {
             }
         }
     }
-	
-	KMSelectable[] ProcessTwitchCommand(string command)
+
+#pragma warning disable 414
+    private readonly string TwitchHelpMessage = @"Set the answer with “!{0} set (color)”. For color, use the first letter of the color, for example, R for red. Exceptions are A for gray and K for black. Submit the answer with “!{0} submit”.";
+#pragma warning restore 414
+
+    KMSelectable[] ProcessTwitchCommand(string command)
     {
         int repA, repB, repC, repD;
         KMSelectable[] cmdA, cmdB, cmdC, cmdD, first = {};
