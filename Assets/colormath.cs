@@ -1,22 +1,14 @@
 ﻿using UnityEngine;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Newtonsoft.Json;
-using KMHelper;
+using KModkit;
 
 public class Colormath : MonoBehaviour {
-
-    public class ModSettingsJSON
-    {
-        public bool enableColorblindMode;
-        public string note;
-    }
 
     public KMAudio Audio;
     public KMSelectable[] btn;
     public MeshRenderer[] ledLeft, ledRight;
     public KMBombInfo Info;
-    public KMModSettings modSettings;
     public TextMesh Text;
     public Color[] colors;
     public GameObject[] colorblindTextLeft, colorblindTextRight;
@@ -52,7 +44,7 @@ public class Colormath : MonoBehaviour {
     {8,0,2,6,3,5,9,7,1,4}
     };
 
-    private bool _click = false, _isSolved = false, _lightsOn = false, isColorBlind = false;
+    private bool _click = false, _isSolved = false, _lightsOn = false, _isColorblind = false;
     private int _mode, _act, _left, _right, _red = 0, _ans = 0, _sol = 0;
     private readonly int[] _rightPos = { 0, 0, 0, 0 }, _solColor = { 0, 0, 0, 0 };
     private readonly string[] _colorText = { "Blue", "Green", "Purple", "Yellow", "White", "Magenta", "Red", "Orange", "Gray", "Black" };
@@ -102,10 +94,10 @@ public class Colormath : MonoBehaviour {
         _right = Random.Range(1, 10000);
 
         //check for color blind mode first!
-        isColorBlind = ColorBlindCheck();
+        _isColorblind = GetComponent<KMColorblindMode>().ColorblindModeActive;
         
         //enable helper texts
-        if (isColorBlind)
+        if (_isColorblind)
         {
             Debug.LogFormat("[Color Math #{0}] Colorblind mode enabled, showing colors of LEDs in text.", _moduleId);
 
@@ -200,19 +192,19 @@ public class Colormath : MonoBehaviour {
         int _batt = Info.GetBatteryCount();
         if(_batt<=1)
         {
-            _red = (Info.GetSerialNumberNumbers().First() * 1000) + (Info.GetOffIndicators().Count() * 100) + 90 + Info.GetPortCount(KMBombInfoExtensions.KnownPortType.RJ45);
+            _red = (Info.GetSerialNumberNumbers().First() * 1000) + (Info.GetOffIndicators().Count() * 100) + 90 + Info.GetPortCount(Port.RJ45);
         }
         else if(_batt<=3)
         {
-            _red = (Info.GetPortCount(KMBombInfoExtensions.KnownPortType.PS2) * 100) + (Info.GetSerialNumberLetters().Count() * 10) + Info.GetSerialNumberNumbers().Last();
+            _red = (Info.GetPortCount(Port.PS2) * 100) + (Info.GetSerialNumberLetters().Count() * 10) + Info.GetSerialNumberNumbers().Last();
         }
         else if(_batt<=5)
         {
-            _red = (Info.GetSerialNumber().Count(c => "AEIOU".Contains(c)) * 1000) + (Info.GetBatteryHolderCount() * 100) + (Info.GetPortCount(KMBombInfoExtensions.KnownPortType.Serial) * 10) + 4;
+            _red = (Info.GetSerialNumber().Count(c => "AEIOU".Contains(c)) * 1000) + (Info.GetBatteryHolderCount() * 100) + (Info.GetPortCount(Port.Serial) * 10) + 4;
         }
         else
         {
-            _red = (Info.GetPortCount(KMBombInfoExtensions.KnownPortType.DVI) * 1000) + 500 + ((Info.GetSerialNumberLetters().Count() - Info.GetSerialNumber().Count(c => "AEIOU".Contains(c))) * 10) + (Info.GetOnIndicators().Count());
+            _red = (Info.GetPortCount(Port.DVI) * 1000) + 500 + ((Info.GetSerialNumberLetters().Count() - Info.GetSerialNumber().Count(c => "AEIOU".Contains(c))) * 10) + (Info.GetOnIndicators().Count());
         }
     }
 
@@ -231,7 +223,7 @@ public class Colormath : MonoBehaviour {
             ledLeft[i].material.color = colors[_leftcolor[i,tl]];
             ledRight[i].material.color = colors[_rightcolor[i,tr]];
 
-            if (isColorBlind)
+            if (_isColorblind)
             {
                 colorblindTextLeft[i].GetComponent<TextMesh>().text = _colorblindText[_leftcolor[i, tl]];
                 colorblindTextRight[i].GetComponent<TextMesh>().text = _colorblindText[_rightcolor[i, tr]];
@@ -243,23 +235,6 @@ public class Colormath : MonoBehaviour {
         {
             Debug.LogFormat("[Color Math #{0}] Left LED converts to {1} (sequence {2} {3} {4} {5})", _moduleId, _left, _colorText[_tempPosLeft[0]], _colorText[_tempPosLeft[1]], _colorText[_tempPosLeft[2]], _colorText[_tempPosLeft[3]]);
             Debug.LogFormat("[Color Math #{0}] Right LED converts to {1} (sequence {2} {3} {4} {5})", _moduleId, _right, _colorText[_tempPosRight[0]], _colorText[_tempPosRight[1]], _colorText[_tempPosRight[2]], _colorText[_tempPosRight[3]]);
-        }
-    }
-
-    bool ColorBlindCheck()
-    {
-        try
-        {
-            ModSettingsJSON settings = JsonConvert.DeserializeObject<ModSettingsJSON>(modSettings.Settings);
-            if (settings != null)
-                return settings.enableColorblindMode;
-            else
-                return false;
-        }
-        catch (JsonReaderException e)
-        {
-            Debug.LogFormat("[Color Math #{0}] JSON reading failed with error {1}, assuming colorblind mode is disabled.", _moduleId, e.Message);
-            return false;
         }
     }
 
@@ -276,7 +251,7 @@ public class Colormath : MonoBehaviour {
                     ledRight[i].material.color = Color.blue;
                     _rightPos[i] = 0;
 
-                    if (isColorBlind) colorblindTextRight[i].GetComponent<TextMesh>().text = _colorblindText[_rightPos[i]];
+                    if (_isColorblind) colorblindTextRight[i].GetComponent<TextMesh>().text = _colorblindText[_rightPos[i]];
                 }
                 _click = true;
             }
@@ -286,7 +261,7 @@ public class Colormath : MonoBehaviour {
                 if (_rightPos[m] > 9) _rightPos[m] = 0;
                 ledRight[m].material.color = colors[_rightPos[m]];
 
-                if (isColorBlind) colorblindTextRight[m].GetComponent<TextMesh>().text = _colorblindText[_rightPos[m]];
+                if (_isColorblind) colorblindTextRight[m].GetComponent<TextMesh>().text = _colorblindText[_rightPos[m]];
             }
         }
     }
@@ -328,7 +303,7 @@ public class Colormath : MonoBehaviour {
     }
 
 #pragma warning disable 414
-    private readonly string TwitchHelpMessage = @"Set the answer with “!{0} set (color)”. For color, use the first letter of the color, for example, R for red. Exceptions are A for gray and K for black. Submit the answer with “!{0} submit”.";
+    private readonly string TwitchHelpMessage = @"Set the answer to red, green, blue, purple with “!{0} set r,g,b,p”. For color, use the first letter of the color, for example, R for red. Exceptions are A for gray and K for black. Submit the answer with “!{0} submit”.";
 #pragma warning restore 414
 
     KMSelectable[] ProcessTwitchCommand(string command)

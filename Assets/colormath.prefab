@@ -380,7 +380,7 @@ GameObject:
   - component: {fileID: 114000013755949892}
   - component: {fileID: 114000012211911132}
   - component: {fileID: 114000012306636448}
-  - component: {fileID: 114177412612472926}
+  - component: {fileID: 114470743268456262}
   m_Layer: 0
   m_Name: colormath
   m_TagString: Untagged
@@ -2289,7 +2289,6 @@ MonoBehaviour:
   - {fileID: 23000012291027492}
   - {fileID: 23000010890647518}
   Info: {fileID: 114000013892534284}
-  modSettings: {fileID: 114177412612472926}
   Text: {fileID: 102000010899759472}
   colors:
   - {r: 0, g: 0, b: 1, a: 0}
@@ -2511,20 +2510,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShaderNames:
   - GUI/KT 3D Text
---- !u!114 &114177412612472926
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000014042970342}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -289456416, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Settings: "{ \t \t \t\"enableColorblindMode\": false, \t\"note\": \"Set enableColorblindMode
-    to true to enable text helpers on the module.\" }"
-  SettingsPath: 
 --- !u!114 &114219942606798582
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2577,6 +2562,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShaderNames:
   - GUI/KT 3D Text
+--- !u!114 &114470743268456262
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000014042970342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1cfb889a07d5fd4e9baed7960bb397f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _colorblindMode: 0
 --- !u!114 &114532892148286132
 MonoBehaviour:
   m_ObjectHideFlags: 1
