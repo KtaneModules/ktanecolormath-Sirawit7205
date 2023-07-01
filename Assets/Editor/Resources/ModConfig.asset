@@ -13,11 +13,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: colormath
   title: Color Math
+  author: 
   description: "So many colors!\r\n\r\nMy very first attempt at using KMBombInfoExtension.
     (Thanks Timwi for pointing this out for me!)\r\n\r\nModule ID: colormath\r\n\r\nManual
     HTML: https://ktane.timwi.de/HTML/Color%20Math.html\r\nManual PDF: https://ktane.timwi.de/PDF/Color%20Math.pdf\n\nThis
     module has a colorblind mode. The first letter of the color (or A for gray and
     K for black) will be displayed next to the LEDs."
-  version: 2.0
+  version: 2.1
   outputFolder: build
   previewImage: {fileID: 2800000, guid: 9c3c87b138425e64cba2b11b9d05dc3f, type: 3}
